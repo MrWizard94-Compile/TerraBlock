@@ -1,0 +1,543 @@
+/** Block definitions for TerraBlock */
+
+export const BlockId = {
+  AIR: 0,
+  GRASS: 1,
+  DIRT: 2,
+  STONE: 3,
+  SAND: 4,
+  WOOD: 5,
+  LEAVES: 6,
+  COAL_ORE: 7,
+  IRON_ORE: 8,
+  GOLD_ORE: 9,
+  CRYSTAL_ORE: 10,
+  TORCH: 11,
+  PLANKS: 12,
+  BRICK: 13,
+  SNOW: 14,
+  BEDROCK: 15,
+  WATER: 16,
+  MUSHROOM: 17,
+  CORRUPT: 18,
+  HELLSTONE: 19,
+  COPPER_ORE: 20,
+  CLAY: 21,
+  GLASS: 22,
+  COBBLE: 23,
+  LIFE_CRYSTAL: 24,
+  CHEST: 25,
+  PLATFORM: 26,
+  ICE: 27,
+  ASH: 28,
+  DEMONITE: 29,
+  // furniture & stations
+  WORKBENCH: 30,
+  FURNACE: 31,
+  ANVIL: 32,
+  CHAIR: 33,
+  TABLE: 34,
+  DOOR: 35,
+  BENCH: 36,
+  BED: 37,
+  HELLFORGE: 38,
+  // biomes / hardmode
+  JUNGLE_GRASS: 39,
+  VINE: 40,
+  DUNGEON_BRICK: 41,
+  CLOUD: 42,
+  SILVER_ORE: 43,
+  MYTHRIL_ORE: 44,
+  ADAMANTITE_ORE: 45,
+  CHLOROPHYTE_ORE: 46,
+  PEARLSTONE: 47,
+  EBONSTONE: 48,
+  LIVING_WOOD: 49,
+};
+
+const hex = (h) => {
+  const n = parseInt(h.replace("#", ""), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+
+export const BLOCKS = {
+  [BlockId.AIR]: {
+    name: "Air",
+    solid: false,
+    transparent: true,
+    hardness: 0,
+    color: [0, 0, 0],
+  },
+  [BlockId.GRASS]: {
+    name: "Grass",
+    solid: true,
+    transparent: false,
+    hardness: 0.5,
+    color: hex("#4a8f30"),
+    topColor: hex("#6fdc4a"),
+    bottomColor: hex("#8b5a2b"),
+    drop: "dirt",
+    dropCount: 1,
+  },
+  [BlockId.DIRT]: {
+    name: "Dirt",
+    solid: true,
+    transparent: false,
+    hardness: 0.5,
+    color: hex("#8b5a2b"),
+    drop: "dirt",
+  },
+  [BlockId.STONE]: {
+    name: "Stone",
+    solid: true,
+    transparent: false,
+    hardness: 1.5,
+    color: hex("#7a7f88"),
+    drop: "stone",
+    requiresPick: true,
+  },
+  [BlockId.SAND]: {
+    name: "Sand",
+    solid: true,
+    transparent: false,
+    hardness: 0.4,
+    color: hex("#e0c36a"),
+    drop: "sand",
+  },
+  [BlockId.WOOD]: {
+    name: "Wood",
+    solid: true,
+    transparent: false,
+    hardness: 1.0,
+    color: hex("#6b4226"),
+    topColor: hex("#8a6a40"),
+    drop: "wood",
+  },
+  [BlockId.LEAVES]: {
+    name: "Leaves",
+    solid: true,
+    transparent: true,
+    hardness: 0.2,
+    color: hex("#3d9e45"),
+    topColor: hex("#5ecf5a"),
+    drop: "wood",
+    dropChance: 0.08,
+  },
+  [BlockId.COAL_ORE]: {
+    name: "Coal Ore",
+    solid: true,
+    transparent: false,
+    hardness: 2.0,
+    color: hex("#3a3a3a"),
+    drop: "coal",
+    requiresPick: true,
+  },
+  [BlockId.IRON_ORE]: {
+    name: "Iron Ore",
+    solid: true,
+    transparent: false,
+    hardness: 2.5,
+    color: hex("#b0a090"),
+    drop: "iron_ore",
+    requiresPick: true,
+  },
+  [BlockId.GOLD_ORE]: {
+    name: "Gold Ore",
+    solid: true,
+    transparent: false,
+    hardness: 2.8,
+    color: hex("#d4af37"),
+    drop: "gold_ore",
+    requiresPick: true,
+  },
+  [BlockId.CRYSTAL_ORE]: {
+    name: "Crystal Ore",
+    solid: true,
+    transparent: false,
+    hardness: 3.5,
+    color: hex("#c56cf0"),
+    drop: "crystal",
+    requiresPick: true,
+  },
+  [BlockId.TORCH]: {
+    name: "Torch",
+    solid: false,
+    transparent: true,
+    hardness: 0.1,
+    color: hex("#ffb347"),
+    light: 12,
+    drop: "torch",
+  },
+  [BlockId.PLANKS]: {
+    name: "Planks",
+    solid: true,
+    transparent: false,
+    hardness: 0.8,
+    color: hex("#c4a35a"),
+    drop: "planks",
+  },
+  [BlockId.BRICK]: {
+    name: "Brick",
+    solid: true,
+    transparent: false,
+    hardness: 2.0,
+    color: hex("#a0522d"),
+    drop: "brick",
+    requiresPick: true,
+  },
+  [BlockId.SNOW]: {
+    name: "Snow",
+    solid: true,
+    transparent: false,
+    hardness: 0.3,
+    color: hex("#f0f5ff"),
+    drop: "dirt",
+  },
+  [BlockId.BEDROCK]: {
+    name: "Bedrock",
+    solid: true,
+    transparent: false,
+    hardness: Infinity,
+    color: hex("#222228"),
+  },
+  [BlockId.WATER]: {
+    name: "Water",
+    solid: false,
+    transparent: true,
+    hardness: 0,
+    color: hex("#3a7bd5"),
+    fluid: true,
+  },
+  [BlockId.MUSHROOM]: {
+    name: "Giant Mushroom",
+    solid: true,
+    transparent: false,
+    hardness: 0.4,
+    color: hex("#e17055"),
+    drop: "mushroom",
+  },
+  [BlockId.CORRUPT]: {
+    name: "Corrupt Stone",
+    solid: true,
+    transparent: false,
+    hardness: 2.2,
+    color: hex("#6c5ce7"),
+    drop: "stone",
+    requiresPick: true,
+  },
+  [BlockId.HELLSTONE]: {
+    name: "Hellstone",
+    solid: true,
+    transparent: false,
+    hardness: 4.0,
+    color: hex("#d63031"),
+    drop: "hellstone",
+    requiresPick: true,
+  },
+  [BlockId.COPPER_ORE]: {
+    name: "Copper Ore",
+    solid: true,
+    transparent: false,
+    hardness: 1.8,
+    color: hex("#cd7f32"),
+    drop: "copper_ore",
+    requiresPick: true,
+  },
+  [BlockId.CLAY]: {
+    name: "Clay",
+    solid: true,
+    transparent: false,
+    hardness: 0.6,
+    color: hex("#b66a50"),
+    drop: "clay",
+  },
+  [BlockId.GLASS]: {
+    name: "Glass",
+    solid: true,
+    transparent: true,
+    hardness: 0.3,
+    color: hex("#a8d8ea"),
+    drop: "glass",
+  },
+  [BlockId.COBBLE]: {
+    name: "Cobblestone",
+    solid: true,
+    transparent: false,
+    hardness: 1.4,
+    color: hex("#6d7078"),
+    drop: "cobble",
+    requiresPick: true,
+  },
+  [BlockId.LIFE_CRYSTAL]: {
+    name: "Life Crystal",
+    solid: true,
+    transparent: true,
+    hardness: 1.2,
+    color: hex("#ff4d6d"),
+    light: 8,
+    drop: "life_crystal",
+  },
+  [BlockId.CHEST]: {
+    name: "Chest",
+    solid: true,
+    transparent: false,
+    hardness: 1.5,
+    color: hex("#c49a3c"),
+    drop: "chest_item",
+  },
+  [BlockId.PLATFORM]: {
+    name: "Platform",
+    solid: true,
+    transparent: true,
+    hardness: 0.5,
+    color: hex("#a67c52"),
+    drop: "platform",
+  },
+  [BlockId.ICE]: {
+    name: "Ice",
+    solid: true,
+    transparent: true,
+    hardness: 0.7,
+    color: hex("#9ad7f5"),
+    drop: "ice",
+  },
+  [BlockId.ASH]: {
+    name: "Ash",
+    solid: true,
+    transparent: false,
+    hardness: 0.5,
+    color: hex("#4a4440"),
+    drop: "ash",
+  },
+  [BlockId.DEMONITE]: {
+    name: "Demonite Ore",
+    solid: true,
+    transparent: false,
+    hardness: 3.2,
+    color: hex("#5b2c6f"),
+    drop: "demonite",
+    requiresPick: true,
+  },
+  [BlockId.WORKBENCH]: {
+    name: "Work Bench",
+    solid: true,
+    transparent: false,
+    hardness: 1,
+    color: hex("#c4a35a"),
+    drop: "workbench",
+  },
+  [BlockId.FURNACE]: {
+    name: "Furnace",
+    solid: true,
+    transparent: false,
+    hardness: 2,
+    color: hex("#6d6d6d"),
+    light: 6,
+    drop: "furnace",
+    requiresPick: true,
+  },
+  [BlockId.ANVIL]: {
+    name: "Iron Anvil",
+    solid: true,
+    transparent: false,
+    hardness: 2.5,
+    color: hex("#8a8e94"),
+    drop: "anvil",
+    requiresPick: true,
+  },
+  [BlockId.CHAIR]: {
+    name: "Chair",
+    solid: true,
+    transparent: true,
+    hardness: 0.5,
+    color: hex("#a67c52"),
+    drop: "chair",
+    furniture: true,
+  },
+  [BlockId.TABLE]: {
+    name: "Table",
+    solid: true,
+    transparent: true,
+    hardness: 0.8,
+    color: hex("#b8956a"),
+    drop: "table",
+    furniture: true,
+  },
+  [BlockId.DOOR]: {
+    name: "Door",
+    // Closed doors block; open state handled in World.isSolidAt via doorOpen map
+    solid: true,
+    transparent: true,
+    hardness: 1,
+    color: hex("#8b6914"),
+    drop: "door",
+    multiBlock: "door",
+  },
+  [BlockId.BENCH]: {
+    name: "Bench",
+    solid: true,
+    transparent: true,
+    hardness: 0.6,
+    color: hex("#9a7b4f"),
+    drop: "bench",
+    furniture: true,
+  },
+  [BlockId.BED]: {
+    name: "Bed",
+    solid: true,
+    transparent: true,
+    hardness: 1,
+    color: hex("#e84393"),
+    drop: "bed",
+    furniture: true,
+    multiBlock: "bed",
+  },
+  [BlockId.HELLFORGE]: {
+    name: "Hellforge",
+    solid: true,
+    transparent: false,
+    hardness: 3,
+    color: hex("#c0392b"),
+    light: 10,
+    drop: "hellforge",
+    requiresPick: true,
+  },
+  [BlockId.JUNGLE_GRASS]: {
+    name: "Jungle Grass",
+    solid: true,
+    transparent: false,
+    hardness: 0.5,
+    color: hex("#1e8449"),
+    topColor: hex("#27ae60"),
+    drop: "dirt",
+  },
+  [BlockId.VINE]: {
+    name: "Vine",
+    solid: false,
+    transparent: true,
+    hardness: 0.1,
+    color: hex("#196f3d"),
+    drop: "vine",
+  },
+  [BlockId.DUNGEON_BRICK]: {
+    name: "Dungeon Brick",
+    solid: true,
+    transparent: false,
+    hardness: 3.5,
+    color: hex("#5d6d7e"),
+    drop: "dungeon_brick",
+    requiresPick: true,
+  },
+  [BlockId.CLOUD]: {
+    name: "Cloud",
+    solid: true,
+    transparent: true,
+    hardness: 0.2,
+    color: hex("#f5f6fa"),
+    drop: "cloud",
+  },
+  [BlockId.SILVER_ORE]: {
+    name: "Silver Ore",
+    solid: true,
+    transparent: false,
+    hardness: 2.6,
+    color: hex("#c0c0c0"),
+    drop: "silver_ore",
+    requiresPick: true,
+  },
+  [BlockId.MYTHRIL_ORE]: {
+    name: "Mythril Ore",
+    solid: true,
+    transparent: false,
+    hardness: 4.2,
+    color: hex("#3dcf9a"),
+    drop: "mythril_ore",
+    requiresPick: true,
+  },
+  [BlockId.ADAMANTITE_ORE]: {
+    name: "Adamantite Ore",
+    solid: true,
+    transparent: false,
+    hardness: 4.8,
+    color: hex("#c0392b"),
+    drop: "adamantite_ore",
+    requiresPick: true,
+  },
+  [BlockId.CHLOROPHYTE_ORE]: {
+    name: "Chlorophyte Ore",
+    solid: true,
+    transparent: false,
+    hardness: 5.5,
+    color: hex("#2ecc71"),
+    drop: "chlorophyte_ore",
+    requiresPick: true,
+  },
+  [BlockId.PEARLSTONE]: {
+    name: "Pearlstone",
+    solid: true,
+    transparent: false,
+    hardness: 2,
+    color: hex("#f8c8dc"),
+    drop: "pearlstone",
+    requiresPick: true,
+  },
+  [BlockId.EBONSTONE]: {
+    name: "Ebonstone",
+    solid: true,
+    transparent: false,
+    hardness: 2.2,
+    color: hex("#4a3a6a"),
+    drop: "ebonstone",
+    requiresPick: true,
+  },
+  [BlockId.LIVING_WOOD]: {
+    name: "Living Wood",
+    solid: true,
+    transparent: false,
+    hardness: 1.2,
+    color: hex("#6b8e23"),
+    drop: "wood",
+  },
+};
+
+export function isSolid(id) {
+  return BLOCKS[id]?.solid ?? false;
+}
+
+/** Blocks that use non-cube furniture meshes */
+export function isFurnitureMesh(id) {
+  return (
+    id === BlockId.DOOR ||
+    id === BlockId.CHAIR ||
+    id === BlockId.TABLE ||
+    id === BlockId.BENCH ||
+    id === BlockId.BED ||
+    id === BlockId.PLATFORM ||
+    id === BlockId.ANVIL ||
+    id === BlockId.CHEST ||
+    id === BlockId.TORCH
+  );
+}
+
+export function isTransparent(id) {
+  return !id || (BLOCKS[id]?.transparent ?? true);
+}
+
+export function getBlockColor(id, face) {
+  const b = BLOCKS[id];
+  if (!b) return [1, 0, 1];
+  if (face === 2 && b.topColor) return b.topColor;
+  if (face === 3 && b.bottomColor) return b.bottomColor;
+  return b.color;
+}
+
+/**
+ * @param {number} id
+ * @param {() => number} [rng] returns [0,1)
+ */
+export function blockDrop(id, rng = Math.random) {
+  const b = BLOCKS[id];
+  if (!b?.drop) return null;
+  if (b.dropChance !== undefined && b.dropChance !== null && rng() > b.dropChance) return null;
+  return { item: b.drop, count: b.dropCount ?? 1 };
+}

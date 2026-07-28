@@ -1,0 +1,50 @@
+# AGENTS.md — TerraBlock **desktop / honest scope**
+
+Project-local ops notes. Constitution: `SOUL.md`.
+
+## Mission
+
+Playable **Terraria-inspired** 3D voxel sandbox (Electron desktop). Dig, craft, fight, climb a boss ladder.  
+
+**Do not claim Terraria parity percentages** unless backed by `docs/PARITY.md` (honest re-score: overall **~15%**, not 75%+). Prefer concrete features over score inflation.
+
+## Stack (exact pins)
+
+| three | 0.185.1 | vite | 8.1.1 | electron | 37.2.0 | ws | 8.21.1 | eslint | 9.30.1 |
+
+## Commands
+
+```bash
+npm install
+npm run desktop         # production build + Electron window
+npm run desktop:dev     # Vite + Electron hot reload
+npm run desktop:pack    # Windows installer + portable under release/
+npm run dev             # browser-only (playtest / debug)
+npm run verify          # lint + tests + build
+npm run playtest        # autonomous smoke (Chromium)
+npm run mp-server       # multiplayer relay :8787
+```
+
+## Layout
+
+```
+electron/     main process, preload, desktop:dev launcher
+src/game/     all simulation + content + UI
+playtest/     Playwright eyes/hands
+server/       mp-server.mjs
+docs/         PARITY, ARCHITECTURE, DECISIONS
+release/      electron-builder output (gitignored)
+```
+
+
+## Invariants
+
+1. `npm run verify` green before delivery  
+2. Content integrity tests pass  
+3. Save v4 + migrate older slots  
+4. Playtest bridge only with `?playtest=1`  
+5. No TODOs/stubs (SOUL §1)
+
+## Campaign win
+
+Moon Lord kill → `game.victory`, achievement Completionist, autosave.

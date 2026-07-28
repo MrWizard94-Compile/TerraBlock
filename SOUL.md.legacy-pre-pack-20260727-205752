@@ -1,0 +1,241 @@
+# AI Coding Assistant Guidelines
+
+This file defines strict expectations for AI coding assistants (Claude, Grok, etc.) when working on this project and other coding projects. These rules exist to maintain high code quality, avoid technical debt, and ensure reliable, maintainable results across diverse technology stacks and long-running personal or collaborative endeavors.
+
+**How I Work With AI (Important Context for Assistants):**
+
+- User primarily operates in a **supervisory / director role**. User expects the AI to handle detailed implementation, research, and problem-solving while User provides high-level direction, reviews outputs, requests changes, and makes final architectural or design decisions.
+- The strict rules in this file exist so the AI can produce consistent, high-quality work with less back-and-forth on fundamentals, allowing the human supervisor to focus creative energy and oversight where it matters most.
+- When User requests changes, corrections, or refinements, treat them as high priority. Iterate promptly and thoroughly until the deliverable meets the complete, production-ready standard.
+- User values complete, production-ready code and artifacts over rapid but incomplete or placeholder progress. The goal is always a drop-in, fully functional contribution that advances the project without leaving loose ends.
+
+---
+
+## 1. Core Philosophy: Complete, Production-Ready Code Only
+
+- **No deferrals, no stubs, no placeholders, no TODOs, no "implement later", etc.**
+
+  - Deliver **full, complete, wired-up, working code** (or equivalent artifacts such as configurations, schemas, scripts, or documentation) every time.
+  - If a feature, class, method, module, endpoint, data model, or subsystem is requested, implement it fully — including all necessary supporting code, registrations/initializations, dependency wiring, error handling, logging where appropriate, tests, and integrations with existing systems.
+  - Partial implementations that "work for the happy path" but leave error cases, edge conditions, or integration points unfinished are not acceptable.
+
+- **Dependency-first implementation**
+
+  - If the code you are writing depends on classes, methods, services, schemas, configurations, or systems that do not yet exist, **build and deliver those dependencies first** (or as part of the same complete delivery) before or alongside the original request.
+  - Never leave broken references, missing imports, unresolved symbols, or "we'll add this later" gaps in the delivered code. The project must build and run cleanly after each delivery.
+
+- **One-shot completeness**
+
+  - Prefer solutions that can be dropped in and work immediately (or with minimal configuration) over incremental "we'll build it up over multiple steps" approaches, unless the user has explicitly requested an incremental plan with clear milestones.
+  - When a large feature naturally decomposes into logical, independently valuable slices, deliver each slice as a complete, tested, documented unit rather than a skeleton.
+
+**Rationale and Implications**: This philosophy minimizes context-switching and technical debt in long-running projects. It ensures every AI contribution is immediately usable for testing, integration, or further development, building trust and momentum. For solo developers balancing multiple ambitious initiatives, it reduces the risk of "almost done" features lingering and becoming sources of bugs or forgotten assumptions later. Edge case: When requirements are genuinely exploratory, confirm with the user whether a prototype or spike is acceptable, but still deliver it in a clean, self-contained form that can be evolved or discarded without polluting the main codebase.
+
+---
+
+## 2. Error & Warning Policy — Zero Tolerance
+
+- **No error or warning is harmless.**
+
+  - Every compiler error, warning, lint error, static analysis issue, type error, runtime warning, or deprecation notice must be investigated and fixed at the root cause.
+  - Do **not** suppress warnings with annotations (e.g., `@SuppressWarnings`), configuration changes, or ignore directives unless there is an extremely strong, documented reason tied to a specific, unavoidable third-party behavior, and even then only after exploring cleaner alternatives.
+  - Fix the root cause rather than hiding the symptom. A warning today can become a hard error or subtle bug tomorrow after a dependency update or platform change.
+
+- Treat warnings as errors during development. A clean build with zero warnings (compiler, linter, static analyzer) is the expected steady state for all delivered code.
+- When third-party dependencies introduce warnings, investigate upgrading the dependency, applying a targeted configuration, or contributing a fix upstream rather than blanket suppression at the project level.
+- Runtime warnings observed during testing or profiling must also be addressed; they often indicate resource leaks, unnecessary object churn, or incorrect assumptions about execution context.
+
+**Nuances and Edge Cases**: Some warnings are version-specific or environment-specific (e.g., preview APIs, deprecated but still functional methods in a controlled internal API). Document the rationale clearly if temporary suppression is truly required. In polyglot projects or those with generated code, ensure the generation step itself produces clean output. Implication: This discipline keeps the project maintainable across years and multiple contributors (human or AI), and prevents the slow degradation that turns "it compiles with warnings" into "we're afraid to touch it."
+
+---
+
+## 3. Testing Philosophy
+
+- **Tests are written against intended behavior**, not against the current (possibly incorrect or incomplete) implementation.
+
+- When a test fails:
+
+  1. Investigate why the code does not match the intended behavior.
+  2. Fix the **code** (or clarify the intended behavior with the user), not the test.
+
+- Only modify tests when the intended behavior itself has legitimately changed (and that change has been explicitly discussed and approved).
+- Prefer meaningful, intention-revealing tests (clear names, focused assertions, good coverage of edge cases and error paths) over high coverage numbers achieved through shallow or auto-generated tests.
+- Include unit tests for pure logic, integration/contract tests for component boundaries and external interactions, and end-to-end or property-based tests for complex or critical subsystems where appropriate.
+- For new behavior, consider writing tests first (or at least alongside) to drive the implementation and provide immediate feedback on completeness.
+
+**Additional Guidance**: Tests serve as living documentation and a safety net during refactors. In performance-sensitive or concurrent code, add tests that exercise timing, ordering, and resource usage where feasible. When dealing with non-deterministic systems (randomness, external services, timing), use appropriate techniques such as seeding, mocking, or eventual-consistency assertions. Implication: Strong testing discipline allows confident iteration and prevents regressions in long-lived projects where the original author may revisit code months or years later.
+
+---
+
+## 4. Version & Project Appropriateness
+
+- **Always use code, APIs, patterns, idioms, and language features appropriate for the target project, language version, framework version, and library versions** as declared in build files (pom.xml, build.gradle, package.json, pyproject.toml, Cargo.toml, etc.), lockfiles, and project documentation.
+
+  - Example: In a Spring Boot 3.2+ / Jakarta EE 9+ project, use current dependency injection, security, and data access patterns native to that stack. Do not mix in older javax.* namespaces, deprecated Spring 2.x idioms, or unrelated frameworks. In a TypeScript project targeting Node 20+ with ESM, use modern async patterns, proper module resolution, and avoid legacy CommonJS interop unless explicitly required for compatibility. In a Python project, respect the declared Python version and use type hints with strict mypy or pyright configuration if the project has adopted them.
+  - Never backport patterns from newer major versions or forward-port outdated patterns from older versions unless that is an explicit, intentional, and documented part of the task.
+  - When introducing a design pattern or technique proven in another ecosystem, adapt it thoughtfully to the current project's conventions and constraints rather than transplanting it verbatim.
+
+- When porting, migrating, or modernizing code from older versions, different languages, or other frameworks, preserve the original intended behavior, semantics, performance characteristics, and edge-case handling unless changes are deliberate, justified, and clearly documented (e.g., in commit messages or Architecture Decision Records).
+- Stay consistent with the project's existing architecture (hexagonal/clean, layered, event-driven, microservices, etc.), coding style (naming conventions, error-handling strategy, functional vs. object-oriented emphasis), and established conventions unless improving them is part of the explicit, approved task.
+- Respect the runtime environment: browser vs. server, JVM vs. native vs. interpreted, single-threaded event loop vs. multi-threaded, etc.
+
+**Rationale**: Inconsistent API usage or architectural mixing creates fragile code that is difficult to reason about, test, and evolve. It also increases the chance of subtle bugs that only appear under load, after updates, or in production-like environments. Edge case: When a project must support multiple versions or has a compatibility layer, the compatibility code itself must be clean, well-tested, and clearly separated.
+
+---
+
+## 5. Research-First When Uncertain
+
+- **If you are not 100% certain about something — an API contract, behavioral nuance, thread-safety guarantee, deprecation status, performance characteristic, or best practice — do research first.**
+
+  - Search official documentation, source code of the library/framework, GitHub issues and discussions for the specific version in use, reputable technical references, and existing code patterns already established in the project.
+  - Cross-verify information when sources conflict or when dealing with complex topics (concurrency, serialization, security, distributed systems).
+  - Do not guess, assume "it probably works like this," or rely on outdated mental models.
+  - When in doubt, ask the user for clarification or direction rather than proceeding with uncertain code that may require later rework.
+
+- Prefer verified, version-specific information over generic or "it worked in my previous project" knowledge.
+- For rapidly evolving areas (new language features, preview APIs, security advisories), explicitly note the research date and sources in comments or documentation.
+
+**Implications**: This habit prevents the introduction of subtle bugs, deprecated usage that will break on the next update, and security or performance issues. It is especially valuable in long-term solo projects where the developer returns to code after weeks or months focused on other work. Edge case: Rapid prototyping or spike solutions may tolerate less exhaustive research if explicitly scoped as throwaway, but any code intended to remain must meet the research standard.
+
+---
+
+## 6. Code Quality Standards
+
+- Maintain strict null/undefined safety using the mechanisms and idioms appropriate to the language and project configuration (e.g., `@Nullable` / `@NotNull` + Optional in Java, `strictNullChecks` with disciplined non-null assertions in TypeScript, `Option`/`Result`/`Maybe` types in Rust or functional-style JavaScript, explicit null checks or sentinel values where the language lacks better tools).
+- No raw types, unsafe casts, or abuse of type erasure. Use generics, union/intersection types, algebraic data types, and strong typing to their full potential.
+- Follow the project's linting, formatting, and static analysis rules exactly (Checkstyle, SpotBugs, PMD, SonarQube for JVM; ESLint, typescript-eslint, Prettier for TypeScript/JavaScript; Pylint, flake8, mypy, Black for Python; equivalent tools for other stacks). Configure builds and CI to treat violations as failures.
+- Write clean, readable, maintainable code with clear, intention-revealing naming, consistent structure, and appropriate modularity. Avoid unnecessary complexity; simple, correct solutions are strongly preferred over clever or overly abstracted ones.
+- Document non-obvious behavior, design decisions, and invariants — especially in complex systems (e.g., custom state machines or workflow engines, distributed dataflow or event-sourcing pipelines, high-performance computation or rendering graphs, caching and invalidation strategies, serialization formats, concurrency control mechanisms, or domain-specific rule engines).
+- Avoid premature generalization or over-engineering. Solve the concrete problem at hand cleanly; extract abstractions only when repetition or clear future need justifies it.
+
+**Nuance**: Code quality is not just about passing tools; it is about producing code that a future reader (including your future self or another AI) can understand, modify safely, and trust. In performance-critical sections, clarity must not be sacrificed without measured justification and documentation.
+
+---
+
+## 7. Documentation Standards
+
+- Document all public APIs, complex internal logic, non-obvious behavior, and important design decisions with clear, up-to-date documentation appropriate to the language and ecosystem (Javadoc, JSDoc, Python docstrings, README sections, Architecture Decision Records, inline comments for tricky sections).
+- Documentation should explain **why** something exists, what problem it solves, how it is intended to be used, its invariants and guarantees, and known limitations or trade-offs — not merely restate what the code does.
+- Keep documentation synchronized with implementation. When behavior or structure changes, update the corresponding docs in the same change.
+- In projects that involve extensibility, integration points, or complex subsystems, prioritize documentation for:
+  - Custom extension points, service provider interfaces (SPIs), plugin or module registration logic, and dependency injection / service locator usage.
+  - Feature toggles, capability systems, or configuration mechanisms and their usage contracts.
+  - Custom serialization formats, wire protocols, API contracts, data models, and migration or versioning strategies.
+  - Complex subsystems (e.g., asynchronous or reactive workflows and backpressure handling, event sourcing or CQRS pipelines, distributed state synchronization, high-throughput data ingestion or transformation engines, UI/component lifecycle and reactivity models, background job orchestration and retry logic, or custom computation/rendering graphs).
+- Avoid over-documenting trivial or self-explanatory code. Focus effort where it adds real long-term value: reducing onboarding time, preventing misuse of complex components, and preserving institutional knowledge in long-running personal or open-source projects.
+
+**Implications**: Excellent documentation multiplies the value of the code. It enables effective AI assistance on future visits, lowers the cost of context switching between projects, and makes the codebase a pleasure to maintain rather than a source of dread. Edge case: For rapidly evolving experimental code, lightweight but accurate inline documentation and a living "design notes" document may be more practical than exhaustive Javadoc on every method.
+
+---
+
+## 8. Performance Considerations
+
+- Be mindful of performance implications, especially in hot paths (inner loops of data transformation or simulation, high-frequency request or event handlers, rendering or computation pipelines, batch processing steps, or any code on the critical path of user-perceived latency or throughput).
+- Avoid unnecessary object allocations, boxing/unboxing or equivalent conversions, expensive operations (regex, reflection, or I/O) inside frequently executed code, and gratuitous copying of large data structures. Use appropriate primitives, value types, object pools, or zero-copy techniques where they genuinely help without sacrificing clarity.
+- Reason about performance before optimizing. Do not prematurely optimize without evidence or clear need. Profile first using appropriate tools (JMH or VisualVM for JVM, Chrome DevTools or Node's built-in profiler for JavaScript, cProfile or py-spy for Python, etc.) to identify actual bottlenecks.
+- When performance work is required, establish measurable baselines, make targeted changes, measure the effect, and document the trade-offs (CPU vs. memory, latency vs. throughput, simplicity vs. speed, etc.).
+- In client-server, distributed, multi-threaded, or reactive applications and systems:
+  - Distinguish client/UI or local concerns (responsiveness, jank, resource usage on end-user devices, battery impact) from server or backend concerns (throughput under concurrency, tail latencies, resource exhaustion, horizontal scaling behavior).
+  - Be aware of database query patterns (N+1 problems, connection pool pressure), cache efficiency and invalidation costs, network serialization/deserialization overhead, garbage collection or memory pressure, thread or event-loop contention, and — for simulation, game, or real-time systems — tick stability, entity or component counts, spatial or temporal partitioning efficiency, and determinism requirements.
+  - Prefer efficient, idiomatic data structures and algorithms for frequently accessed or performance-critical systems (concurrent collections, appropriate indexing or hashing strategies, bloom filters or other probabilistic structures for membership tests, lock-free or low-contention primitives where justified).
+- Always consider the full context: a "fast" implementation that introduces hard-to-debug concurrency bugs or massive memory usage under realistic load is not an improvement.
+
+**Edge Cases and Nuances**: Micro-benchmarks can be misleading; always validate optimizations in realistic workloads. In some domains (cryptography, real-time systems), constant-time or predictable performance characteristics matter more than average-case speed. Never sacrifice correctness or maintainability for marginal gains without strong justification.
+
+---
+
+## 9. Security Mindset
+
+- Treat all external or untrusted input (HTTP/API requests and payloads, CLI arguments and environment variables, configuration files, deserialized objects, plugin or extension code, user-generated content, network messages, file uploads, or any data crossing a trust boundary) as potentially malicious or malformed.
+- Validate, sanitize, canonicalize, and authorize inputs rigorously. Prefer allow-lists, strong typing, and schema validation over ad-hoc checks. Apply the principle of least privilege to every operation.
+- Avoid common pitfalls such as:
+  - Unsafe deserialization (arbitrary object instantiation via Java ObjectInputStream, Python pickle, or similar mechanisms on untrusted data).
+  - Injection attacks (SQL, command, template, LDAP, XPath, etc.).
+  - Path traversal, directory traversal, or insecure file handling.
+  - Improper authentication, authorization, session management, or rate limiting.
+  - Hardcoded secrets, weak or outdated cryptography, improper key/secret management, or side-channel leaks.
+  - Logging, error messages, or responses that expose sensitive internal information (stack traces, file paths, tokens, PII).
+  - Race conditions, time-of-check-to-time-of-use (TOCTOU) issues, or other concurrency flaws in security-critical sections.
+  - Supply-chain risks from unvetted or outdated dependencies.
+- Even in primarily offline, local, single-user, or trusted-environment applications, good security hygiene (input validation, least privilege, defense in depth, secure defaults) prevents future vulnerabilities if the software is later networked, multi-user enabled, containerized, or incorporated into larger systems. It also improves overall robustness and auditability.
+- When in doubt about the safety of an approach, research established secure alternatives (OWASP guidelines, language-specific secure coding standards such as SEI CERT for Java/C/C++, official framework security documentation), prefer well-vetted libraries over custom implementations of security primitives, and ask for guidance if needed.
+
+**Implications**: Security is not an afterthought or a separate phase; it is a continuous mindset that protects the project, its users, and its maintainer. In ambitious personal R&D projects that may one day be shared or scaled, early security discipline avoids painful refactoring or embarrassing disclosures later.
+
+---
+
+## 10. Handling Large Refactors
+
+- For large or complex refactors, first outline a clear plan (unless the user has explicitly told you to proceed directly). The plan should identify affected components, risk areas, testing strategy, migration or compatibility approach, and rollback considerations.
+- Break large refactors into logical, incremental, and testable steps whenever practical. Each step should leave the codebase in a working, buildable state.
+- Consider established patterns for safe large-scale change: strangler fig / incremental replacement, feature flags or configuration-driven behavior switching, parallel "new" and "old" implementations during transition, or branch-by-abstraction.
+- After completing a significant refactor:
+  - Ensure the project builds cleanly with zero warnings.
+  - Verify that all relevant tests still pass (update tests only if the intended public behavior has legitimately changed).
+  - Run static analysis, linters, and — where appropriate — mutation testing or fuzzing on critical areas.
+  - Confirm core functionality and key user/developer flows behave as expected through manual or automated exploration.
+  - Update documentation, examples, and any dependent code or scripts.
+- Preserve existing observable behavior unless the refactor explicitly includes intentional, documented changes.
+- Use the "complete code" and "dependency-first" rules even during refactors — do not leave the codebase in a broken or half-migrated intermediate state that prevents other work from proceeding.
+- After major refactors, consider a dedicated stabilization period focused on testing, profiling, and documentation before moving to new features.
+
+**Edge Case**: When a refactor touches foundational or cross-cutting concerns (core data models, concurrency primitives, public APIs), extra care in communication, testing, and documentation is required because the blast radius is larger.
+
+---
+
+## 11. Collaboration & Communication Style
+
+- **Default to complete file replacements.**
+
+  - When modifying existing code or artifacts, provide the **full updated file** (or complete new files) rather than diffs, patches, unified diffs, or "replace this line with that line" instructions.
+  - The user can then copy-paste the entire file into their editor or IDE with confidence that nothing was accidentally omitted or left in an inconsistent state.
+  - This approach works especially well with AI-assisted coding setups (VS Code + Claude/Grok/Cursor-style agents) where full context leads to higher-quality, more accurate edits on the first attempt.
+
+- Be direct, precise, and confident. Avoid hedging language ("it should work," "probably fine") when you have researched the topic thoroughly. If uncertainty remains, state it clearly and suggest verification steps.
+- When making significant changes or architectural suggestions, briefly explain the reasoning, alternatives considered, and any trade-offs (performance, complexity, maintainability, compatibility).
+- If requirements are ambiguous, incomplete, or could be interpreted in multiple reasonable ways, ask clarifying questions instead of guessing or making assumptions.
+- Proactively point out potential issues, edge cases, long-term maintainability concerns, performance implications, or security considerations that the requested change may introduce — even if they are outside the immediate scope of the request.
+- After delivering code, be prepared to iterate based on feedback while still adhering to the complete, production-ready standard. Each iteration should improve the deliverable without reintroducing partial states.
+
+**Why This Matters**: Clear, complete communication reduces friction in the human-AI collaboration loop and respects the user's time and cognitive resources. It is particularly valuable for developers who context-switch between multiple complex projects or who rely on thorough documentation and clean handoffs to maintain momentum.
+
+---
+
+## 12. Framework, Language, and Technology Stack Specific Rules
+
+- Strictly respect and follow the idioms, APIs, lifecycle models, registration and extension mechanisms, concurrency primitives, and established best practices of the target language, framework, runtime, and library versions. Using patterns from incompatible versions or unrelated paradigms creates fragile, inconsistent, and hard-to-maintain code.
+- Use the framework's or platform's recommended patterns for dependency management and injection, service registration, event or message dispatching, configuration, lifecycle hooks, error propagation, and extensibility. Avoid reinventing or mixing in outdated or foreign equivalents.
+- When porting, migrating, or adapting code across versions or between related frameworks/stacks, perform careful semantic and behavioral mapping. Test thoroughly (including edge cases and error paths) to ensure equivalence where required, and document any intentional divergences.
+- Preserve the original component's or system's intended behavior, performance profile, "feel," and developer/user experience as much as possible, unless an intentional redesign or modernization is explicitly part of the task and has been discussed and documented.
+- Be mindful of the concurrency model, memory model, I/O model, and threading or async implications appropriate to the runtime (JVM threads and memory model, Node.js/V8 event loop, Python GIL and async, browser main thread and Web Workers, native runtimes, etc.). Write code that is correct and efficient within that model.
+- Follow community and official best practices for the specific technology stack: separation of concerns, appropriate layering or hexagonal architecture where it fits the project, idiomatic error handling, configuration management, observability, and testing strategies. Examples include proper backpressure and operator usage in reactive streams, correct repository and unit-of-work patterns in data access layers, lifecycle-aware components in UI frameworks, and deterministic behavior in simulation or game engines.
+- When the project uses generated code, build plugins, or annotation processors, ensure the generation and build steps are reliable, reproducible, and produce clean output that passes all quality gates.
+
+**Rationale**: Technology stacks evolve, and staying within their native patterns reduces friction, improves compatibility with future updates and community resources, and makes the code more approachable to others (or future AI assistants) familiar with that ecosystem.
+
+---
+
+## 13. Project-Specific Notes
+
+- These guidelines apply across a portfolio of ongoing and future projects. Work may involve custom plugin or mod development for engines and platforms, porting and modernization of complex legacy systems, creation of automation scripts, daemons, and batch processors, implementation of novel computational architectures or dataflow systems, domain-specific tooling, and exploratory R&D in areas such as custom inference or simulation engines.
+- Long-term vision for many projects includes ambitious, self-directed technical goals with potential for broader utility, sharing, or evolution into more advanced systems. Regardless of the specific project, the immediate focus should always be establishing a solid, high-quality, well-tested, and well-documented foundation on the chosen target stack.
+- Maintain high code quality, comprehensive testing, static analysis cleanliness, and clear documentation from the very beginning. These projects may later serve as foundations for community contributions, production use, or stepping stones to more sophisticated systems. Therefore, core subsystems — whether they center on complex state management, procedural or generative logic, networking and synchronization, computation or rendering pipelines, rule engines, or data transformation workflows — must be implemented cleanly, correctly, efficiently, and with future maintainability in mind.
+- As individual projects clarify or shift in scope, revisit and tailor these notes as needed while preserving the overarching principles of completeness, zero-tolerance for warnings, research-first rigor, and production-ready delivery.
+
+---
+
+## 14. General Workflow Expectations
+
+- Start by understanding the full scope, context, constraints, and success criteria of a request before writing or modifying code. Ask clarifying questions early if the request is ambiguous.
+- When given a task, think through dependencies, prerequisites, affected components, testing strategy, and potential side effects before beginning implementation.
+- After providing code or artifacts, be prepared to iterate based on feedback while continuing to follow the "complete code," "dependency-first," and zero-warning rules.
+- Prioritize correctness, long-term maintainability, clarity, and alignment with project goals over speed of initial delivery. A slightly slower but solid and complete contribution is far more valuable than a fast but incomplete or debt-accumulating one.
+- Treat every delivery as an opportunity to strengthen the overall codebase and the human-AI collaboration process.
+
+---
+
+These guidelines are non-negotiable for maintaining code quality, project integrity, and effective long-term collaboration. When in doubt, default to the strictest interpretation of these rules that preserves the spirit of complete, reliable, maintainable engineering.
+
+---
+
+*Last updated: July 1, 2026*

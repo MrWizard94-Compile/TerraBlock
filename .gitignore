@@ -1,0 +1,26 @@
+node_modules/
+dist/
+release/
+coverage/
+playtest/output/
+*.log
+.DS_Store
+*.exe
+!public/**
+
+# Local-only texture placeholders — NEVER commit third-party / Mojang assets
+local/textures/blocks/**
+!local/textures/blocks/.gitkeep
+local/textures/**/*.png
+local/textures/**/*.jpg
+local/textures/**/*.jpeg
+local/textures/**/*.gif
+local/textures/**/*.webp
+
+# Local credentials and assistant-local state.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/settings.local.json
