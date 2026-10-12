@@ -1,47 +1,33 @@
-# AGENTS — Project Entry Point (TerraBlock)
+# AGENTS — TerraBlock project entry
 
-**Status:** Level 4 pointer — legacy local constitutions replaced  
-**Pack path (relative):** `../../AGENTS Constitution/`  
-**Pack version:** see `../../AGENTS Constitution/VERSION`
+**Status:** Level 4 project instructions  
+**Canonical Constitution:** https://github.com/MrWizard94-Compile/Agents-Constitution  
+**Accepted source commit:** `5d5aa0c79a9bcad095f58ebe315bf44adc94fbff`
 
-This file does **not** duplicate the constitution. Binding quality law lives in the pack.
+The GitHub repository above is the sole editable source of WPAI Constitution
+law. This file supplies TerraBlock-specific context; it is not a copy of that
+law. For this project, load `SKILL.md`, `AGENTS.md`, `SOP.md`,
+`references/always-load.md`, and applicable `law/*` modules from the same
+verified accepted commit. A generated local mirror may be used only when its
+manifest matches that commit. If the pinned source cannot be verified, report
+the gap rather than substituting an adjacent directory or retired SOUL file.
 
----
+## TerraBlock mission and acceptance
 
-## Binding pack (Level 1–3)
+- Build and maintain a Windows desktop, Terraria-inspired 3D voxel sandbox.
+  The Electron app is the product; the browser is a development/playtest
+  surface. Preserve user worlds and saves across changes.
+- Use the stack and exact versions declared by `package.json` and
+  `package-lock.json`; Node.js must satisfy `>=20`.
+- Run `npm run verify` for zero-warning lint, unit tests, a production build,
+  and the automated browser smoke playtest. Do not set `SKIP_PLAYTEST=1` for
+  delivery acceptance. Exercise the desktop app separately when desktop
+  runtime or packaging behavior changes.
+- Maintain honest feature/parity claims in `README.md` and `docs/PARITY.md`.
+  Product decisions and historical context remain in this repository.
 
-| Role | Path |
-|------|------|
-| **Constitution (SOUL)** | [../../AGENTS Constitution/AGENTS.md](../../AGENTS Constitution/AGENTS.md) |
-| **Process (SOP)** | [../../AGENTS Constitution/SOP.md](../../AGENTS Constitution/SOP.md) |
-| **Identity / portability** | [../../AGENTS Constitution/PACK.md](../../AGENTS Constitution/PACK.md) |
-| **Lock** | [../../AGENTS Constitution/LOCK.md](../../AGENTS Constitution/LOCK.md) |
-| **Adopt** | [../../AGENTS Constitution/ADOPT.md](../../AGENTS Constitution/ADOPT.md) |
-| **Integrity** | [../../AGENTS Constitution/INTEGRITY.md](../../AGENTS Constitution/INTEGRITY.md) |
+CI checks out the exact Constitution commit above, validates its source and
+tests, and audits this project for active retired-pack consumers. Advance the
+pin only to another accepted, verified canonical commit in the same change.
 
-### Always load
-
-1. This file (project entry)
-2. Pack `AGENTS.md`
-3. Pack `SOP.md`
-4. Pack `constitution/03-DEFINITION-OF-DONE.md`
-5. Pack `standards/ENGINEERING.md`
-6. Pack `standards/TESTING.md`
-7. Pack `standards/DOCUMENTATION.md`
-
-Then load pack modules per the applicability matrix in pack `AGENTS.md`.
-
-### Verify pack
-
-```powershell
-pwsh -File "../../AGENTS Constitution/tools/verify-pack.ps1"
-```
-
-Must exit 0 after pack install/move/update.
-
----
-
-## Project-local law (Level 4)
-
-Add project-specific mission, stack pins, and commands below as needed.
-Product docs stay in this repository (README, docs/). Do not weaken pack CONST-* rules without a documented override.
+Historical recovery (not active law): `git show e3e2e825f71fa3fdac4d7d3194a6fdbb5920358e:SOUL.md`

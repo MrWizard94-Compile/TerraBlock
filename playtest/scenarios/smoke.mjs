@@ -144,30 +144,34 @@ export async function runSmoke(client, log = console.log) {
   check("moved", moved, `dxz=${Math.hypot(st.player.x - x0, st.player.z - z0).toFixed(2)}`);
 
   // —— Combat: spawn + damage enemy ——
-  const slimeHpBefore = 999;
-  await client.command("spawn_enemy", {
+  // Spawn inside the starter sword's 2.5-unit reach. The old 2+2 diagonal
+  // (2.83 units) only worked when AI happened to move toward the player.
+  const spawnedSlime = await client.command("spawn_enemy", {
     type: "slime",
-    x: st.player.x + 2,
+    x: st.player.x + 1,
     y: st.player.y,
-    z: st.player.z + 2,
+    z: st.player.z + 1,
   });
   st = await client.getState();
-  const slime = (st.nearby || []).find((e) => e.type === "slime");
-  check("spawn slime", !!slime, slime ? `hp=${slime.hp}` : "missing");
-  const hp0 = slime?.hp ?? slimeHpBefore;
-  await client.command("look_at", {
-    x: st.player.x + 2,
-    y: st.player.y + 0.4,
-    z: st.player.z + 2,
-  });
+  const slime = (st.nearby || []).find((e) => e.id === spawnedSlime.id);
+  check("spawn slime", spawnedSlime.ok && !!slime, slime ? `hp=${slime.hp}` : "missing");
+  const hp0 = slime?.hp;
+  const killsBefore = st.player.killCount;
   // sword is often hotbar 1 after swap restore
   await client.command("select_hotbar", { index: 1 });
+  if (slime) {
+    await client.command("look_at", {
+      x: slime.x,
+      y: slime.y + 0.4,
+      z: slime.z,
+    });
+  }
   await client.command("attack", { ms: 1500 });
   await client.command("tick", { ms: 200 });
   st = await client.getState();
-  const slime2 = (st.nearby || []).find((e) => e.type === "slime");
-  const damaged = !slime2 || slime2.hp < hp0;
-  check("combat damages enemy", damaged, slime2 ? `hp ${hp0}→${slime2.hp}` : "killed");
+  const slime2 = (st.nearby || []).find((e) => e.id === spawnedSlime.id);
+  const damaged = !!slime && (slime2 ? slime2.hp < hp0 : st.player.killCount > killsBefore);
+  check("combat damages enemy", damaged, slime2 ? `hp ${hp0}→${slime2.hp}` : `kills ${killsBefore}→${st.player.killCount}`);
   await client.screenshot("03_combat");
 
   // —— Boss spawn ——

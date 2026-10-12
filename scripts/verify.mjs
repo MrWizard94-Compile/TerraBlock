@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * SOUL pre-delivery verification gate.
+ * TerraBlock pre-delivery verification gate.
  * Exit 0 only when lint, unit tests, and production build all succeed.
  */
 import { spawnSync } from "node:child_process";

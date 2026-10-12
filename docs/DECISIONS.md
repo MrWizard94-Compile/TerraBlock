@@ -1,5 +1,8 @@
 # Architecture Decision Records — TerraBlock
 
+References below to SOUL describe the historical decision context only. The
+current binding quality law is the pinned WPAI Constitution in `AGENTS.md`.
+
 ## ADR-001: Browser + Three.js instead of a native engine
 
 **Status**: Accepted  
