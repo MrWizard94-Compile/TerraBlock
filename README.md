@@ -6,7 +6,7 @@ This is **not** “75–85% of Terraria.” Honest assessment: **[~15% overall v
 
 | | |
 |--|--|
-| **Version** | **5.1.x** |
+| **Version** | **5.3.4** (see `package.json`) |
 | **Platform** | **Windows desktop (Electron)** · web still used for playtest |
 | **Stack** | Electron · Vite · Three.js · WebSocket MP · Node ≥ 20 |
 | **Gate** | `npm run verify` · `npm run playtest` |

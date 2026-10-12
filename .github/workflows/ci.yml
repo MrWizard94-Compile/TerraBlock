@@ -1,0 +1,56 @@
+name: TerraBlock quality and Constitution gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out TerraBlock
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: project
+          persist-credentials: false
+
+      - name: Check out accepted WPAI Constitution
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: MrWizard94-Compile/Agents-Constitution
+          ref: 5d5aa0c79a9bcad095f58ebe315bf44adc94fbff
+          path: constitution
+          persist-credentials: false
+
+      - name: Validate canonical source and tests
+        working-directory: constitution
+        run: |
+          python3 tools/validate-source.py
+          python3 -m unittest discover -s tests -v
+
+      - name: Audit TerraBlock Constitution adoption
+        run: python3 constitution/tools/check-adoption.py project
+
+      - name: Install Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.19.0
+          cache: npm
+          cache-dependency-path: project/package-lock.json
+
+      - name: Install locked project dependencies
+        working-directory: project
+        run: npm ci
+
+      - name: Install Chromium and system dependencies for playtest
+        working-directory: project
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify lint, unit tests, production build, and smoke playtest
+        working-directory: project
+        run: npm run verify

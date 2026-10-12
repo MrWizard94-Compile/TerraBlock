@@ -1,4 +1,9 @@
-# MANIFEST — TerraBlock **desktop / honest scope**
+# MANIFEST — TerraBlock desktop delivery history
+
+This records the earlier desktop packaging delivery. Checkmarks below are
+historical claims, not fresh evidence for the WPAI Constitution migration or
+a current packaged-app acceptance run. Current source verification is performed
+by `npm run verify` and the pinned Constitution CI workflow.
 
 **Title**: Desktop app + honest parity docs  
 **Summary**: Electron shell packages TerraBlock as a native window. **Not** full Terraria parity — see `docs/PARITY.md` (~15% overall).
@@ -38,6 +43,6 @@ npm run desktop:dev
 feat(desktop): Electron shell + Windows pack (TerraBlock.exe)
 ```
 
-## Self-audit (SOUL §0)
+## Historical self-audit (desktop delivery)
 
 Completeness for scoped product, zero lint, tests, docs, pinned deps, **desktop packaging** — **pass**.
